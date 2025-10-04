@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СМЕРТЕЛЬНЫЙ ФАЙЛ ДИМЫ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            color: #00ff00;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Хакерский заголовок */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+            font-family: 'Courier New', monospace;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #ff4444;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Сетка фото */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .photo-file {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .photo-file:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.3);
+            border-color: #ff4444;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .photo-preview:hover img {
+            transform: scale(1.1);
+        }
+
+        .photo-preview::before {
+            content: '🔒 ЗАЩИЩЕНО';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff0000;
+            z-index: 2;
+        }
+
+        .file-info {
+            padding: 15px;
+            border-top: 1px solid #00ff00;
+        }
+
+        .filename {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #00ff00;
+        }
+
+        .file-details {
+            font-size: 0.9em;
+            color: #888;
+            font-family: 'Courier New', monospace;
+        }
+
+        .danger-level {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .level-high { background: #ff4444; color: #000; }
+        .level-medium { background: #ffaa00; color: #000; }
+        .level-low { background: #00ff00; color: #000; }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+
+        .modal-info {
+            padding: 20px;
+            background: #000;
+            border-top: 1px solid #00ff00;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            color: #ff4444;
+            cursor: pointer;
+            z-index: 1001;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-size: 24px;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 255, 0, 0.4);
+        }
+
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+
+        /* Консоль */
+        .console {
+            background: #000;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            height: 100px;
+            overflow-y: auto;
+        }
+
+        .console-line {
+            margin-bottom: 5px;
+            animation: type 0.5s ease-in;
+        }
+
+        @keyframes type {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .gallery { grid-template-columns: 1fr; }
+            .photo-preview { height: 200px; }
+            .nav-btn { font-size: 18px; padding: 8px 12px; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.5em; }
+            .subtitle { font-size: 1em; }
+            .photo-preview { height: 150px; }
+        }
+
+        /* Эффект матрицы */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Кнопка возврата */
+        .back-btn {
+            display: inline-block;
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #45b7d1;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>▓▓▓ СМЕРТЕЛЬНЫЙ ФАЙЛ ДИМЫ ▓▓▓</h1>
+            <div class="subtitle">>>> СЕКРЕТНЫЕ МАТЕРИАЛЫ: ЕГО САМЫЕ УПОРОТЫЕ ФОТО <<<</div>
+        </header>
+
+        <div class="warning">
+            ⚠️ ВНИМАНИЕ: КОМПРОМЕТИРУЮЩИЕ МАТЕРИАЛЫ! ⚠️<br>
+            Доступ разрешен только проверенным агентам. Все фото зашифрованы.
+        </div>
+
+        <div class="gallery" id="gallery">
+            <div class="photo-file" data-index="0">
+                <div class="photo-preview">
+                    <img src="img/1.jpg" alt="Дима на вечеринке" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Мьюинг</div>
+                    <div class="file-details">Размер: 4.2MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="1">
+                <div class="photo-preview">
+                    <img src="img/2.jpg" alt="Ночной кодинг" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Мьюинг с боку</div>
+                    <div class="file-details">Размер: 3.8MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-medium">ОПАСНОСТЬ: СРЕДНЯЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="2">
+                <div class="photo-preview">
+                    <img src="img/3.jpg" alt="Танцевальная битва" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Царь Бомба</div>
+                    <div class="file-details">Размер: 5.1MB | Дата: 19.09.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: КРИТИЧЕСКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="3">
+                <div class="photo-preview">
+                    <img src="img/4.jpg" alt="Кулинарный провал" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Артёмка и Дима с хитрым лицом</div>
+                    <div class="file-details">Размер: 2.9MB | Дата: 27.07.2025</div>
+                    <div class="danger-level level-medium">ОПАСНОСТЬ: СРЕДНЯЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="4">
+                <div class="photo-preview">
+                    <img src="img/5.jpg" alt="Гейминг ярости" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">3 Лучших друга</div>
+                    <div class="file-details">Размер: 4.7MB | Дата: 27.07.2025</div>
+                    <div class="danger-level level-low">ОПАСНОСТЬ: НИЗКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="5">
+                <div class="photo-preview">
+                    <img src="img/6.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Дима с паспортом</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: 27.07.2025</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="6">
+                <div class="photo-preview">
+                    <img src="img/7.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Дима очкобус</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+		
+            <div class="photo-file" data-index="7">
+                <div class="photo-preview">
+                    <img src="img/8.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Первый удушающий димы</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+		
+            <div class="photo-file" data-index="8">
+                <div class="photo-preview">
+                    <img src="img/9.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Дима. Прокид через бедро</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: 05.03.2024</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="9">
+                <div class="photo-preview">
+                    <img src="img/10.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">"Ованс" в лодке</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-low">ОПАСНОСТЬ: НИЗКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="10">
+                <div class="photo-preview">
+                    <img src="img/11.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">ЧТООООО</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="11">
+                <div class="photo-preview">
+                    <img src="img/12.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Я Мактрахер</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+
+            <div class="photo-file" data-index="12">
+                <div class="photo-preview">
+                    <img src="img/13.jpg" alt="Странный сон" style="display: none;">
+                </div>
+                <div class="file-info">
+                    <div class="filename">Зубастик</div>
+                    <div class="file-details">Размер: 3.5MB | Дата: хх.хх.хххх</div>
+                    <div class="danger-level level-high">ОПАСНОСТЬ: ВЫСОКАЯ</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-btn">← Назад к поздравлению</a>
+
+        <div class="console" id="console">
+            <div class="console-line">> Инициализация системы... УСПЕХ</div>
+            <div class="console-line">> Загрузка базы данных... УСПЕХ</div>
+            <div class="console-line">> Доступ к файлам ДИМА... РАЗРЕШЕН</div>
+            <div class="console-line">> Готов к просмотру компромата...</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="modal">
+        <span class="close-btn" onclick="closeModal()">✕</span>
+        <button class="nav-btn prev-btn" onclick="changePhoto(-1)">◀</button>
+        <button class="nav-btn next-btn" onclick="changePhoto(1)">▶</button>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="" class="modal-image">
+            <div class="modal-info">
+                <div class="filename" id="modalFilename">filename.enc</div>
+                <div class="file-details" id="modalDetails">Размер: 0MB | Дата: 00.00.0000</div>
+                <div class="file-details" id="modalDescription">Описание загружается...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные файлов - ЗДЕСЬ ДОБАВЛЯЙТЕ ВАШИ ФОТО
+        const files = [
+            {
+                filename: "Мьюинг",
+                image: "img/1.jpg",
+                details: "Размер: 4.2MB | Дата: хх.хх.хх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "Мьюинг"
+            },
+            {
+                filename: "Мьюинг с боку", 
+                image: "img/2.jpg",
+                details: "Размер: 3.8MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: СРЕДНЯЯ",
+                description: "Мьюинг с боку"
+            },
+            {
+                filename: "Царь Бомба",
+                image: "img/3.jpg",
+                details: "Размер: 5.1MB | Дата: 19.09.хххх", 
+                danger: "ОПАСНОСТЬ: КРИТИЧЕСКАЯ",
+                description: "Это бомба"
+            },
+            {
+                filename: "Артём с паспортом и Дима с хитрым лицом",
+                image: "img/4.jpg",
+                details: "Размер: 2.9MB | Дата: 27.07.2025",
+                danger: "ОПАСНОСТЬ: СРЕДНЯЯ", 
+                description: "Тут Артём"
+            },
+            {
+                filename: "3 Лучших друга",
+                image: "img/5.jpg",
+                details: "Размер: 4.7MB | Дата: 27.07.2025",
+                danger: "ОПАСНОСТЬ: НИЗКАЯ",
+                description: "Ему скоро 14"
+            },
+            {
+                filename: "Дима с паспортом", 
+                image: "img/6.jpg",
+                details: "Размер: 3.5MB | Дата: 27.07.2025",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "У него есть очки"
+            },
+            {
+                filename: "Дима очкобус", 
+                image: "img/7.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "У него есть очки"
+            },
+            {
+                filename: "Первый удушающий димы", 
+                image: "img/8.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "Миша извини"
+            },
+            {
+                filename: "Дима. Прокид через бедро", 
+                image: "img/9.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "Надеемся объект 3624 не пострадал"
+            },
+            {
+                filename: "Ованс в лодке", 
+                image: "img/10.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: НИЗКАЯ",
+                description: "его сейчас потопят"
+            },
+            {
+                filename: "ЧТОООООООООО", 
+                image: "img/11.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "ЧТООООООООООО"
+            },
+            {
+                filename: "Я Мактрахер", 
+                image: "img/12.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "Великий косплей"
+            },
+            {
+                filename: "Зубастик", 
+                image: "img/13.jpg",
+                details: "Размер: 3.5MB | Дата: хх.хх.хххх",
+                danger: "ОПАСНОСТЬ: ВЫСОКАЯ",
+                description: "Он сейчас всех перекусает"
+            }
+        ];
+
+        let currentPhotoIndex = 0;
+        const modal = document.getElementById('modal');
+        const modalImage = document.getElementById('modalImage');
+        const modalFilename = document.getElementById('modalFilename');
+        const modalDetails = document.getElementById('modalDetails');
+        const modalDescription = document.getElementById('modalDescription');
+        const consoleElement = document.getElementById('console');
+
+        // Открытие файлов
+        document.querySelectorAll('.photo-file').forEach((file, index) => {
+            file.addEventListener('click', () => {
+                currentPhotoIndex = index;
+                openModal();
+                addConsoleMessage(`> Доступ к файлу: ${files[index].filename}`);
+                addConsoleMessage(`> Расшифровка... УСПЕХ`);
+                addConsoleMessage(`> Описание: ${files[index].description}`);
+            });
+        });
+
+        function openModal() {
+            const file = files[currentPhotoIndex];
+            
+            // Показываем реальное фото в модальном окне
+            modalImage.src = file.image;
+            modalImage.style.display = 'block';
+            
+            modalFilename.textContent = file.filename;
+            modalDetails.textContent = file.details;
+            modalDescription.textContent = file.description;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            addConsoleMessage('> Сеанс просмотра завершен');
+        }
+
+        function changePhoto(direction) {
+            currentPhotoIndex += direction;
+            if (currentPhotoIndex >= files.length) currentPhotoIndex = 0;
+            if (currentPhotoIndex < 0) currentPhotoIndex = files.length - 1;
+            openModal();
+        }
+
+        // Консольные сообщения
+        function addConsoleMessage(message) {
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.textContent = message;
+            consoleElement.appendChild(line);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        }
+
+        // Эффект матрицы
+        function createMatrixEffect() {
+            const chars = '01010101010101010101010101010101';
+            const bg = document.getElementById('matrixBg');
+            
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement('span');
+                span.textContent = chars[Math.floor(Math.random() * chars.length)];
+                span.style.position = 'absolute';
+                span.style.left = Math.random() * 100 + 'vw';
+                span.style.animation = `matrixFall ${5 + Math.random() * 10}s linear infinite`;
+                span.style.animationDelay = Math.random() * 5 + 's';
+                span.style.color = Math.random() > 0.5 ? '#00ff00' : '#008800';
+                bg.appendChild(span);
+            }
+        }
+
+        // Закрытие по ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') changePhoto(-1);
+            if (e.key === 'ArrowRight') changePhoto(1);
+        });
+
+        // Проверка загрузки фото
+        function checkImages() {
+            files.forEach((file, index) => {
+                const img = new Image();
+                img.onload = function() {
+                    console.log(`✅ Фото загружено: ${file.image}`);
+                    // Показываем превью фото при успешной загрузке
+                    const previewImg = document.querySelectorAll('.photo-preview img')[index];
+                    if (previewImg) {
+                        previewImg.style.display = 'block';
+                    }
+                };
+                img.onerror = function() {
+                    console.log(`❌ Ошибка загрузки: ${file.image}`);
+                    addConsoleMessage(`> ОШИБКА: Файл ${file.filename} поврежден`);
+                };
+                img.src = file.image;
+            });
+        }
+
+        // Инициализация
+        window.onload = function() {
+            createMatrixEffect();
+            checkImages();
+            addConsoleMessage('> Система готова к работе, агент');
+            addConsoleMessage('> Для добавления фото отредактируйте массив files в коде');
+        }
+
+        // Добавляем стили для падающих символов матрицы
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes matrixFall {
+                0% {
+                    transform: translateY(-100px) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
